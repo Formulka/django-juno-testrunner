@@ -323,14 +323,31 @@ class TextTestResult(result.TestResult):
         for test, err in errors:
             self.printSingleError(flavour, test, err)
 
-    def printSingleError(self, flavour, test, err):
-        self.stream.writeln(self.separator1)
-        self.stream.writeln("%s: %s" % (flavour, self.getDescription(test)))
-        self.stream.writeln(self.separator2)
-        # at this point, err is a tuple of:
-        # (type, exception, traceback)
-        self.stream.writeln(str("%s") % err)
 
+
+        def printSingleError(self, flavour, test, err):
+            self.stream.writeln(self.separator1)
+            self.stream.writeln("%s: %s" % (flavour, self.getDescription(test)))
+            self.stream.writeln(self.separator2)
+            # err can be a string or a tuple
+            if isinstance(err, tuple):
+                if err[2] is not None:
+                    self.stream.writeln(str(err[1]))
+                    for line in err[2].format_exception(*err):
+                        self.stream.writeln(line)
+                else:
+                    self.stream.writeln(str(err[1]))
+            else:
+                self.stream.writeln(str(err))
+
+                    for line in err[2].format_exception(*err):
+                        self.stream.writeln(line)
+                else:
+                    self.stream.writeln(str(err[1]))
+            else:
+                self.stream.writeln(str(err))
+
+        
     def stopTestRun(self):
         super(TextTestResult, self).stopTestRun()
         self.printErrors()
