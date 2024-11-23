@@ -21,14 +21,17 @@ class JunoDiscoverRunner(DiscoverRunner):
         super().__init__(*args, **kwargs)
         self.use_log_files = not self.failfast
 
-    def run_suite(self, suite, **kwargs):
-        return TextTestRunner(
-            verbosity=self.verbosity,
-            failfast=self.failfast,
-            total_tests=suite.total_tests,
-            slow_test_count=self.slow_test_count,
-            use_log_files=self.use_log_files
-        ).run(suite)
+
+        def run_suite(self, suite, **kwargs):
+            total_tests = getattr(suite, 'total_tests', suite.countTestCases()) # Get total_tests or count them
+            return TextTestRunner(
+                verbosity=self.verbosity,
+                failfast=self.failfast,
+                total_tests=total_tests, # Pass the correct total_tests
+                slow_test_count=self.slow_test_count,
+                use_log_files=self.use_log_files
+            ).run(suite)
+        
 
     def _get_suite(self, test_labels, discover_kwargs, extra_tests, methods):
         suite = TestSuite()

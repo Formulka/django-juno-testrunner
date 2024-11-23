@@ -89,7 +89,10 @@ class TextTestResult(result.TestResult):
         self.descriptions = descriptions
 
         # Custom properties
-        self.total_tests = total_tests
+
+        self._original_test_suite = total_tests # Store the original test suite or count
+        self.total_tests = total_tests if isinstance(total_tests, int) else len(total_tests)
+        
         self.current_test_number = 1
         self.slow_test_count = slow_test_count
         self.rerun_log_file = None

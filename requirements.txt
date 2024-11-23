@@ -1,2 +1,2 @@
-# If you want to run tox to test the project automatically, install the following
-# tox==1.8.1
+
+django==5.1.3
